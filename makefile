@@ -1,35 +1,18 @@
-# Compiler and flags
+# Define the compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -g
+CXXFLAGS = -std=c++17 -Wall
 
-# Target executable name
-TARGET = chess_game
+# Define the source files and the executable name
+SRCS = main.cpp Pieces.cpp Piece.cpp
+TARGET = exe
 
-# Source files (All your .cpp files)
-SRCS = main.cpp Piece.cpp Pieces.cpp
+# Rule to build the target executable
+$(TARGET): $(SRCS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRCS)
 
-# Object files (Generated from .cpp files)
-OBJS = $(SRCS:.cpp=.o)
-
-# Header files (For dependency tracking)
-DEPS = Matrix.h ChessBoard.h Piece.h Pieces.h
-
-# Default rule: build the target
-all: $(TARGET)
-
-# Rule to link the object files into the final executable
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
-
-# Rule to compile .cpp files into .o files
-# It depends on the headers, so if a header changes, the .cpp re-compiles
-%.o: %.cpp $(DEPS)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# Rule to clean up the build files
+# Clean rule to delete object files and the executable
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(TARGET)
 
-# Rule to run the program
-run: all
-	./$(TARGET)
+# Phony targets
+.PHONY: clean

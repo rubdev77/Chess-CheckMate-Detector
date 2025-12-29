@@ -1,6 +1,6 @@
 #include <iostream>
+#include <string>
 #include <vector>
-#include "Piece.h"
 #include "Pieces.h"
 #include "ChessBoard.h"
 

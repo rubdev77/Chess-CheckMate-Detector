@@ -1,7 +1,9 @@
 #include <iostream>
 #include <cmath>
-#include "ChessBoard.h"
+#include <vector>
+#include <string>
 #include "Pieces.h"
+#include "ChessBoard.h"
 
 King::King(char c, int x, int y) : Piece(c, x, y) {}
 
@@ -26,9 +28,9 @@ bool King::canMove(int toX, int toY, const ChessBoard<Piece*>& board)
     }
 }
 
-Queen::Queen(char c, int x, int y) : Piece(c, x, y) {}
+Knight::Knight(char c, int x, int y) : Piece(c, x, y) {}
 
-bool Queen::canMove(int toX, int toY, const ChessBoard<Piece*>& board)  
+bool Knight::canMove(int toX, int toY, const ChessBoard<Piece*>& board)  
 {
     // implementing base cases
     if (toX == x && toY == y) 
@@ -38,31 +40,15 @@ bool Queen::canMove(int toX, int toY, const ChessBoard<Piece*>& board)
     if(board[toY][toX]!=nullptr && (board[toY][toX]->getColor()==this->getColor()))
     return false;
 
-
     // implementing every case
-
-    bool isStraight = (toX == x || toY == y);
-    bool isDiagonal = (abs(toX - x) == abs(toY - y));
-
-    if (!isStraight && !isDiagonal) return false;
-
-    
-    int stepX = (toX > x) ? 1 : (toX < x ? -1 : 0);
-    int stepY = (toY > y) ? 1 : (toY < y ? -1 : 0);
-
-    
-    int curX = x + stepX;
-    int curY = y + stepY;
-
-    while (curX != toX || curY != toY) {
-        if (board[curY][curX] != nullptr) {
-            return false; 
-        }
-        curX += stepX;
-        curY += stepY;
+    if((abs(toX-x)==1 && abs(toY-y)==2) || (abs(toX-x)==2 && abs(toY-y)==1))
+    {
+        return true;
     }
-
-    return true;
+    else
+    {
+        return false;
+    }
 }
 
 Rook::Rook(char c, int x, int y) : Piece(c, x, y) {}
@@ -180,29 +166,6 @@ bool Bishop::canMove(int toX, int toY, const ChessBoard<Piece*>& board)
     return true;
 }
 
-Knight::Knight(char c, int x, int y) : Piece(c, x, y) {}
-
-bool Knight::canMove(int toX, int toY, const ChessBoard<Piece*>& board)  
-{
-    // implementing base cases
-    if (toX == x && toY == y) 
-    return false;
-    if (toX < 0 || toX > 7 || toY < 0 || toY > 7) 
-    return false;
-    if(board[toY][toX]!=nullptr && (board[toY][toX]->getColor()==this->getColor()))
-    return false;
-
-    // implementing every case
-    if((abs(toX-x)==1 && abs(toY-y)==2) || (abs(toX-x)==2 && abs(toY-y)==1))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 Pawn::Pawn(char c, int x, int y) : Piece(c, x, y) {}
 
 bool Pawn::canMove(int toX, int toY, const ChessBoard<Piece*>& board)  
@@ -230,6 +193,45 @@ bool Pawn::canMove(int toX, int toY, const ChessBoard<Piece*>& board)
     }
 
     return false;
+}
+
+Queen::Queen(char c, int x, int y) : Piece(c, x, y) {}
+
+bool Queen::canMove(int toX, int toY, const ChessBoard<Piece*>& board)  
+{
+    // implementing base cases
+    if (toX == x && toY == y) 
+    return false;
+    if (toX < 0 || toX > 7 || toY < 0 || toY > 7) 
+    return false;
+    if(board[toY][toX]!=nullptr && (board[toY][toX]->getColor()==this->getColor()))
+    return false;
+
+
+    // implementing every case
+
+    bool isStraight = (toX == x || toY == y);
+    bool isDiagonal = (abs(toX - x) == abs(toY - y));
+
+    if (!isStraight && !isDiagonal) return false;
+
+    
+    int stepX = (toX > x) ? 1 : (toX < x ? -1 : 0);
+    int stepY = (toY > y) ? 1 : (toY < y ? -1 : 0);
+
+    
+    int curX = x + stepX;
+    int curY = y + stepY;
+
+    while (curX != toX || curY != toY) {
+        if (board[curY][curX] != nullptr) {
+            return false; 
+        }
+        curX += stepX;
+        curY += stepY;
+    }
+
+    return true;
 }
 
 char King::getType() const
