@@ -5,6 +5,8 @@
 #include "Pieces.h"
 #include "ChessBoard.h"
 
+
+
 King::King(char c, int x, int y) : Piece(c, x, y) {}
 
 bool King::canMove(int toX, int toY, const ChessBoard<Piece*>& board) 
