@@ -2,7 +2,6 @@
 #define PIECES_H
 #include "Piece.h"
 
-
 template <typename T> class ChessBoard;
 
 class King : public Piece

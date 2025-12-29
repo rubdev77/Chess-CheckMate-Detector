@@ -1,7 +1,6 @@
 #ifndef Matrix_H
 #define Matrix_H
 
-
 template <typename T>
 class Matrix
 {

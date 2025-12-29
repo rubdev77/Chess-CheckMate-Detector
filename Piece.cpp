@@ -1,7 +1,6 @@
 #include "Piece.h"
 
 
-
 Piece::Piece(char c, int x, int y) : color(c), x(x), y(y) { }
 
 char Piece::getColor() const
