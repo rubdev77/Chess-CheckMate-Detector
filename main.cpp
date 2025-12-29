@@ -7,23 +7,29 @@
 
 int main() {
     ChessBoard<Piece*> board;
-    std::vector<std::string> layout = {
-    "....k...",
-    "........",
-    "........",
-    "........",
-    ".......b",
-    "........",
-    "...PP...",
-    "...QKB.."
-    };
-    
+    std::vector<std::string> layout(8);
+    char c;
+    std::cout << "Welcome to Chess Analyzer!" << std::endl;
+    std::cout << "Input each row:" << std::endl;
+    std::cout << " ABCDEFGH" << std::endl;
+    for(int i = 0; i < 8; i++)
+    {
+        std::cout << i+1;
+        std::cin >> layout[i];
+    }
+
     board.loadBoard(layout);
-    
-    if(board.isCheckmate('W')) {
-        std::cout << "Checkmate Detected!" << std::endl;
-    } else {
-        std::cout << "Not Checkmate." << std::endl;
+
+    std::cout << "Enter which color do you want to check to be checkmated: ";
+    std::cin >> c;
+
+    if(board.isCheckmate(c))
+    {
+        std::cout << "Checkmate detected!" << std::endl;
+    }
+    else
+    {
+        std::cout << "There is no checkmate!" << std::endl;
     }
     return 0;
 }
