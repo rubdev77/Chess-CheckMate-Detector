@@ -22,6 +22,7 @@ class ChessBoard : public Matrix<T>
     bool canReachTargetSquare(int T_X, int T_Y, char At_color);
     bool isMoveSafe(int fromX, int fromY, int toX, int toY, char myColor);
     bool isCheckmate(char color);
+    bool isMateInOne(char color);
 };
 
 
@@ -250,5 +251,58 @@ void ChessBoard<T>::loadBoard(std::vector<std::string>& board) {
         }
     }
 }
+
+template <typename T>
+bool ChessBoard<T>::isMateInOne(char color)
+{
+    char oppColor = (color == 'W') ? 'B' : 'W';
+
+    for (int y = 0; y < 8; y++) 
+    {
+        for (int x = 0; x < 8; x++) 
+        {
+
+            Piece* p = this->mat[y][x];
+            if (!p || p->getColor() != color) 
+            continue;
+
+            for(int ty = 0; ty < 8; ty++) 
+            {
+                for (int tx = 0; tx < 8; tx++)
+                {
+
+                    if(!p->canMove(tx, ty, *this))
+                    continue;
+
+                    if(!isMoveSafe(x, y, tx, ty, color))
+                    continue;
+
+                    Piece* captured = this->mat[ty][tx];
+
+                    int oldX = p->getX();
+                    int oldY = p->getY();
+
+                    this->mat[ty][tx] = p;
+                    this->mat[y][x] = nullptr;
+                    p->setX(tx);
+                    p->setY(ty);
+
+                    bool mate = isCheckmate(oppColor);
+
+                    p->setX(oldX);
+                    p->setY(oldY);
+                    this->mat[y][x] = p;
+                    this->mat[ty][tx] = captured;
+
+                    if(mate)
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
 
 #endif
