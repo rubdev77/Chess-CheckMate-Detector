@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "Pieces.h"
 #include "ChessBoard.h"
@@ -11,13 +12,36 @@ int main()
     std::vector<std::string> layout(8);
 
     std::cout << "Welcome to Chess Analyzer!\n";
-    std::cout << "Input each row:\n";
-    std::cout << "  ABCDEFGH\n";
+    std::cout << "1. Input board manually\n2. Read board from file\nChoice: ";
+    int choice;
+    std::cin >> choice;
 
-    for (int i = 0; i < 8; ++i)
+    if (choice == 2)
     {
-        std::cout << i + 1 << " ";
-        std::cin >> layout[i];
+        std::string filename;
+        std::cout << "Enter filename: ";
+        std::cin >> filename;
+        std::ifstream file(filename);
+        if (!file)
+        {
+            std::cout << "Error: File not found.\n";
+            return 1;
+        }
+        for (int i = 0; i < 8; ++i)
+        {
+            file >> layout[i];
+        }
+    }
+    else
+    {
+        std::cout << "Input each row:\n";
+
+        std::cout << "  ABCDEFGH\n";
+        for (int i = 0; i < 8; ++i)
+        {
+            std::cout << i + 1 << " ";
+            std::cin >> layout[i];
+        }
     }
 
     board.loadBoard(layout);
@@ -28,21 +52,21 @@ int main()
 
     char opponent = (color == 'W') ? 'B' : 'W';
 
-    if (board.isCheckmate(color))
+    if(board.isCheckmate(color))
     {
-        std::cout << "Checkmate detected!\n";
-        return 0;
-    }
-
-    std::cout << "There is no checkmate now.\n";
-
-    if (board.isMateInOne(opponent))
+        std::cout << "Success: Mate detected!" << std::endl;
+    }   
+    else if (board.isMateInOne(opponent)) 
     {
-        std::cout << "Checkmate is possible in one move.\n";
-    }
-    else
+        std::cout << "Success: Mate in One detected!" << std::endl;
+    } 
+    else if (board.isMateInTwo(opponent)) 
     {
-        std::cout << "No mate in one exists.\n";
+        std::cout << "Success: Mate in Two detected!" << std::endl;
+    } 
+    else 
+    {
+        std::cout << "There is no mate for the selected color in this range." << std::endl;
     }
 
     return 0;
