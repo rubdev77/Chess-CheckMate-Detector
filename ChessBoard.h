@@ -24,6 +24,8 @@ class ChessBoard : public Matrix<T>
     bool isCheckmate(char color);
     bool isMateInOne(char color);
     bool isMateInTwo(char color);
+    bool isBoardLegal(char currentTurnColor);
+    bool isStalemate(char color);
 };
 
 
@@ -107,6 +109,62 @@ bool ChessBoard<T>::canReachTargetSquare(int T_X, int T_Y, char Attacker_color)
     return false;
 }
 
+template <typename T>
+bool ChessBoard<T>::isBoardLegal(char currentTurnColor)
+{
+    int w_kings = 0;
+    int b_kings = 0;
+    std::pair<int, int> w_pos = {-1, -1};
+    std::pair<int, int> b_pos = {-1, -1};
+
+    for (int y = 0; y < 8; y++) 
+    {
+        for (int x = 0; x < 8; x++) 
+        {
+            Piece* p = (Piece*)this->mat[y][x];
+
+            if (!p) 
+            {
+                continue;
+            }
+
+            if (p->getType() == 'K') 
+            {
+                if (p->getColor() == 'W') 
+                {
+                    w_kings++;
+                    w_pos = {x, y};
+                }
+                else 
+                {
+                    b_kings++;
+                    b_pos = {x, y};
+                }
+            }
+        }
+    }
+
+    if (w_kings != 1 || b_kings != 1) 
+    {
+        return false;
+    }
+
+    if (abs(w_pos.first - b_pos.first) <= 1 && abs(w_pos.second - b_pos.second) <= 1) 
+    {
+        return false;
+    }
+
+    char oppColor = (currentTurnColor == 'W') ? 'B' : 'W';
+    std::pair<int, int> oppKing = (oppColor == 'W') ? w_pos : b_pos;
+
+    if (canReachTargetSquare(oppKing.first, oppKing.second, currentTurnColor)) 
+    {
+        return false;
+    }
+
+    return true;
+}
+
 // iterates through the board to find the king position and stores it in std::pait and returns it
 template <typename T>
 std::pair<int, int> ChessBoard<T>::findKing(char color)
@@ -162,10 +220,13 @@ bool ChessBoard<T>::isMoveSafe(int fromX, int fromY, int toX, int toY, char myCo
 template <typename T>
 bool ChessBoard<T>::isCheckmate(char color) 
 {
+    
 
     std::pair <int, int> king_Pos = findKing(color);
 
     char oppColor;
+
+    
 
     if(color=='W')
     {
@@ -175,6 +236,7 @@ bool ChessBoard<T>::isCheckmate(char color)
     {
     oppColor = 'W';
     }
+
 
     if (!canReachTargetSquare(king_Pos.first, king_Pos.second, oppColor)) 
     {
@@ -203,6 +265,21 @@ bool ChessBoard<T>::isCheckmate(char color)
         }
     }
     return true; 
+}
+
+
+template <typename T>
+bool ChessBoard<T>::isStalemate(char color)
+{
+    
+    if (canReachTargetSquare(findKing(color).first, findKing(color).second, 
+        (color == 'W' ? 'B' : 'W'))) 
+    {
+        return false; 
+    }
+
+    
+    return true;
 }
 
 template <typename T>
@@ -253,10 +330,17 @@ void ChessBoard<T>::loadBoard(std::vector<std::string>& board) {
     }
 }
 
+
+
 template <typename T>
 bool ChessBoard<T>::isMateInOne(char color)
 {
     char oppColor = (color == 'W') ? 'B' : 'W';
+
+    if (!isBoardLegal(color)) 
+    {
+        return false;
+    }
 
     for (int y = 0; y < 8; y++) 
     {
@@ -308,7 +392,17 @@ bool ChessBoard<T>::isMateInOne(char color)
 template <typename T>
 bool ChessBoard<T>::isMateInTwo(char color)
 {
+
+    if (isStalemate(color))
+    return false;
+
+    
     char opp = (color == 'W') ? 'B' : 'W';
+
+    if (!isBoardLegal(color)) 
+    {
+        return false;
+    }
 
     for (int y = 0; y < 8; y++)
     {

@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++17 -Wall
 
 # Define the source files and the executable name
 SRCS = main.cpp Pieces.cpp Piece.cpp
-TARGET = exe
+TARGET = ChessAnalyzer
 
 # Rule to build the target executable
 $(TARGET): $(SRCS)

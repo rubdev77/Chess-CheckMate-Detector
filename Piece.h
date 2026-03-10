@@ -1,6 +1,6 @@
 #ifndef PIECE_H
 #define PIECE_H
-
+//PIECE
 template <typename T> class ChessBoard;
 
 class Piece

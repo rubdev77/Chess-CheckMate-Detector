@@ -19,7 +19,7 @@ int main()
     if (choice == 2)
     {
         std::string filename;
-        std::cout << "Enter filename: ";
+        std::cout << "Enter filename:  ";
         std::cin >> filename;
         std::ifstream file(filename);
         if (!file)
@@ -69,5 +69,5 @@ int main()
         std::cout << "There is no mate for the selected color in this range." << std::endl;
     }
 
-    return 0;
+    return 0; 
 }

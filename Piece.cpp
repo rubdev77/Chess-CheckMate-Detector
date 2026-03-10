@@ -1,5 +1,5 @@
 #include "Piece.h"
-
+//PIECE
 
 Piece::Piece(char c, int x, int y) : color(c), x(x), y(y) { }
 
