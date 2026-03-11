@@ -5,7 +5,7 @@
 #include <cctype>
 #include "Pieces.h"
 #include "ChessBoard.h" 
-
+    
 int main()
 {
     ChessBoard<Piece*> board;
