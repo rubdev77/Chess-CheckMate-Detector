@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include <cctype>
 #include "Pieces.h"
-#include "ChessBoard.h"
+#include "ChessBoard.h" 
 
 int main()
 {

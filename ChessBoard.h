@@ -392,106 +392,76 @@ bool ChessBoard<T>::isMateInOne(char color)
 template <typename T>
 bool ChessBoard<T>::isMateInTwo(char color)
 {
-
-    if (isStalemate(color))
-    return false;
-
-    
     char opp = (color == 'W') ? 'B' : 'W';
-
-    if (!isBoardLegal(color)) 
-    {
-        return false;
-    }
 
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
         {
             Piece* p = (Piece*)this->mat[y][x];
-            if (!p || p->getColor() != color)
-                continue;
+            if (!p || p->getColor() != color) continue;
 
             for (int ty = 0; ty < 8; ty++)
             {
                 for (int tx = 0; tx < 8; tx++)
                 {
-                    if (!p->canMove(tx, ty, *this))
-                        continue;
-
-                    if (!isMoveSafe(x, y, tx, ty, color))
-                        continue;
+                    if (!p->canMove(tx, ty, *this) || !isMoveSafe(x, y, tx, ty, color)) continue;
 
                     Piece* cap1 = (Piece*)this->mat[ty][tx];
-                    int ox = p->getX();
-                    int oy = p->getY();
-
+                    int ox = p->getX(), oy = p->getY();
                     this->mat[ty][tx] = (T)p;
                     this->mat[y][x] = nullptr;
-                    p->setX(tx);
-                    p->setY(ty);
+                    p->setX(tx); p->setY(ty);
 
-                    bool forcedMate = true;
-                    bool opponentHasMove = false;
+                    bool opponentHasAnyMove = false;
+                    bool allResponsesLeadToMate = true;
 
-                    for (int y2 = 0; y2 < 8 && forcedMate; y2++)
+                    for (int y2 = 0; y2 < 8; y2++)
                     {
-                        for (int x2 = 0; x2 < 8 && forcedMate; x2++)
+                        for (int x2 = 0; x2 < 8; x2++)
                         {
                             Piece* p2 = (Piece*)this->mat[y2][x2];
-                            if (!p2 || p2->getColor() != opp)
-                                continue;
+                            if (!p2 || p2->getColor() != opp) continue;
 
-                            for (int ty2 = 0; ty2 < 8 && forcedMate; ty2++)
+                            for (int ty2 = 0; ty2 < 8; ty2++)
                             {
                                 for (int tx2 = 0; tx2 < 8; tx2++)
                                 {
-                                    if (!p2->canMove(tx2, ty2, *this))
-                                        continue;
+                                    if (!p2->canMove(tx2, ty2, *this) || !isMoveSafe(x2, y2, tx2, ty2, opp)) continue;
 
-                                    if (!isMoveSafe(x2, y2, tx2, ty2, opp))
-                                        continue;
-
-                                    opponentHasMove = true;
+                                    opponentHasAnyMove = true;
 
                                     Piece* cap2 = (Piece*)this->mat[ty2][tx2];
-                                    int ox2 = p2->getX();
-                                    int oy2 = p2->getY();
-
+                                    int ox2 = p2->getX(), oy2 = p2->getY();
                                     this->mat[ty2][tx2] = (T)p2;
                                     this->mat[y2][x2] = nullptr;
-                                    p2->setX(tx2);
-                                    p2->setY(ty2);
+                                    p2->setX(tx2); p2->setY(ty2);
 
                                     if (!isMateInOne(color))
                                     {
-                                        forcedMate = false;
+                                        allResponsesLeadToMate = false;
                                     }
 
                                     this->mat[y2][x2] = (T)p2;
                                     this->mat[ty2][tx2] = (T)cap2;
-                                    p2->setX(ox2);
-                                    p2->setY(oy2);
-
-                                    if (!forcedMate)
-                                        break;
+                                    p2->setX(ox2); p2->setY(oy2);
+                                    if (!allResponsesLeadToMate) break;
                                 }
+                                if (!allResponsesLeadToMate) break;
                             }
+                            if (!allResponsesLeadToMate) break;
                         }
                     }
 
                     this->mat[y][x] = (T)p;
                     this->mat[ty][tx] = (T)cap1;
-                    p->setX(ox);
-                    p->setY(oy);
+                    p->setX(ox); p->setY(oy);
 
-                    if ((opponentHasMove || !opponentHasMove) && forcedMate)
-                        return true;
+                    if (opponentHasAnyMove && allResponsesLeadToMate) return true;
                 }
             }
         }
     }
-
     return false;
 }
 
